@@ -3,8 +3,8 @@ const webdriver = require('selenium-webdriver');
 (async function test() {
     
     var chromeCapabilities = webdriver.Capabilities.chrome();
-    /*var chromeOptions = {'args' : ['--headless']};
-    chromeCapabilities.set('chromeOptions', chromeOptions);*/
+    var chromeOptions = {'args' : ['--headless']};
+    chromeCapabilities.set('chromeOptions', chromeOptions);
 
     let driver = await new webdriver.Builder().withCapabilities(chromeCapabilities).forBrowser('chrome').build();
 
@@ -12,10 +12,12 @@ const webdriver = require('selenium-webdriver');
     try{
         await driver.get('http://www.master-maroc.com/emploi/');
         let items = await driver.findElements(webdriver.By.xpath("//td[@headers='tableOrdering']/a"));
-        // items we get are a list of promise objects
         console.log('------------------------------');
-        console.log('first item : '+items[0].getText());
-        
+        for (let i = 0; i < items.length; i++) {
+            const e = items[i];
+            let href = await e.getAttribute('href');
+            console.log('-> '+ decodeURI(href));
+        }
     }
     catch(e){
         console.log(e);
